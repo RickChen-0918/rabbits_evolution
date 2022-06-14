@@ -7,6 +7,7 @@
 //more user inputs
 //pause & speed up buttons
 //reset button
+//wweeeeeeee
 
 
 let isrunning = false
@@ -17,7 +18,7 @@ class Rabbit{
         this.diameter=40; //0-63, 6bits 
         this.energygain=3; //0-31, 5bits use has barrier fo reproduction?
         this.intelligence=15; //0-15, 4bits 
-        this.speed=10; //0-15, 4bits not implemented
+        this.speed=10; //0-15, 4bits remember to change this
         this.dna=this.getdna() //23 total bits
         this.hunger=100
         this.x=x;
