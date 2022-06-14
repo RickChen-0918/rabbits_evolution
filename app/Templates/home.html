@@ -1,0 +1,17 @@
+{% extends "base.html" %}{%block content%}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col bg-info"><main></main></div>
+        <div class="col-8"></div>
+        <div class="col-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-7 bg-warning"> 
+            <button onclick="start()" id="start">Start</button>
+        </div>
+        <div class="col-5 bg-info">
+            {%include 'right_sliders.html'%}
+        </div>        
+    </div>
+</div>
+{%endblock%}

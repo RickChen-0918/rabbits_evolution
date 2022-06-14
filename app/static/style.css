@@ -1,0 +1,29 @@
+html,
+body {
+    margin:0px;
+    background-color:#6181a7;
+    color:rgb(169, 222, 243);
+}
+
+.card, .cardheader, .cardbody, .navbar{
+    background-color: #5fc2cf;
+    color:beige;
+}
+
+
+a,
+a:active,
+a:link {
+    color:beige;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+a.hover{
+    color: aliceblue;
+}
+
+.no-margin{
+    margin:0px;
+    padding:0px;
+}
