@@ -7,53 +7,84 @@
 //more user inputs
 //pause & speed up buttons
 //reset button
-//wweeeeeeee
-
 
 let isrunning = false
 
 class Rabbit{
-    constructor(x,y,colour){
-        this.colour=colour; //0-15, 4bits colours are cool but hard to graph?
-        this.diameter=40; //0-63, 6bits 
-        this.energygain=3; //0-31, 5bits use has barrier fo reproduction?
-        this.intelligence=15; //0-15, 4bits 
-        this.speed=10; //0-15, 4bits remember to change this
-        this.dna=this.getdna() //23 total bits
-        this.hunger=100
+    constructor(x,y,dna){
+        this.dna= dna.toString() //dna+23bits, so 26bits in total
+        this.colour=parseInt(this.dna.slice(3,7),2); //0-15, 4bits
+        this.diameter=parseInt(this.dna.slice(7,12),2)+32; //0-31, 5bits 
+        this.energygain=parseInt(this.dna.slice(12,17),2); //0-31, 5bits use has barrier for reproduction?
+        this.intelligence=parseInt(this.dna.slice(17,21),2); //0-15, 4bits 
+        this.speed=parseInt(this.dna.slice(21,25),2); //0-15, 4bits
+        this.energy=100
+        this.maxsize=this.diameter*1.25
         this.x=x;
         this.y=y;
         this.vx=0;
         this.vy=0;
         this.offset=Math.floor(Math.random() * 9);
     }
-    getdna(){
-        let c = this.colour.toString(2);
-        c = '0000'.substr(c.length) +c;
-        let d = this.diameter.toString(2)
-        d = '000000'.substr(d.length) +d;
-        let e = this.energygain.toString(2)
-        e = '00000'.substr(e.length) +e;
-        let i = this.intelligence.toString(2)
-        i = '0000'.substr(i.length) +i;
-        let s = this.speed.toString(2)
-        s = '0000'.substr(s.length) +s;
-        return(c+d+e+i+s)
-        }
-    update(grass){
+
+    
+
+    chooseaction(grass){
+        //eat, reproduce, move, do nothing
         let tempx = this.x
         let tempy = this.y
+        let tempe = this.energy
         let tempd = this.diameter
-        let eatflag = 0
+        grass.forEach(function(item,index,object){
+            let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2));
+            if(distance <= (tempd/2+18)){
+                object.splice(index,1);
+                return [1];
+            }
+        })
+
+        rabbits.forEach(function(item){
+            let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2));
+            if(distance <= ((tempd/2) + (item.diameter/2))){
+                if(tempe > 120 && item.energy > 120){
+                    let avg_x = (tempx + item.x)/2
+                    let avg_y = (tempy + item.y)/2
+                    return [2,avg_x,avg_y,item.dna];
+                }
+            }
+        })
+
+        if (Math.floor((millis()%1000)/100) == this.offset){
+            return [3];
+        }
+        return [4];
+    }
+
+    update(grass){
         let closest = 1100
+        let action = this.chooseaction(grass)
+        let tempx = this.x
+        let tempy = this.y
         let grassvx = 0
         let grassvy = 0
-        grass.forEach(function(item,index,object){
+
+        if(action[0] == 1){
+            this.energy += 30 + this.energygain
+            if(this.diameter < this.maxsize){
+                this.diameter += 2
+                } 
+        }else if(action[0] == 2){
+            this.energy -= 120
+            let cutoff = Math.floor(Math.random() * 20) + 4
+            let newdna = this.dna.slice(3,cutoff) + action[3].slice(cutoff,25)
+            rabbits.push(new Rabbit(action[1],action[2],newdna));
+        } else if(action[0] == 3){
+            this.x += this.vx*(this.speed/4)
+            this.y += this.vy*(this.speed/4)
+            this.energy -= 0
+        } else if(action[0] == 4){
+        grass.forEach(function(item){
             let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2))
-            if(distance <= (tempd/2+18)){
-                object.splice(index,1)
-                eatflag = 1
-            }
             if(distance<closest){
                 closest = distance
                 if(item.x > tempx){
@@ -73,37 +104,24 @@ class Rabbit{
                 }
             })
 
-        if (Math.floor((millis()%1000)/100) != this.offset){
             this.vx = Math.floor(Math.random() * 3) - 1
             this.vy = Math.floor(Math.random() * 3) - 1
             if(Math.floor(Math.random() * 16) <= this.intelligence){
                 this.vx = grassvx
                 this.vy = grassvy
             }
-            if(this.x<=25){
+            if(this.x<=(this.diameter/2)+5){
                 this.vx = 1
             }
-            else if(this.x>=965){
+            else if(this.x>=985-(this.diameter/2)){
                 this.vx = -1
             }
-            if(this.y<=25){
+            if(this.y<=(this.diameter/2)+5){
                 this.vy = 1
             }
-            else if(this.y>=475){
+            else if(this.y>=985-(this.diameter/2)){
                 this.vy = -1
-            }
-
-        } else {
-            this.x += this.vx*this.speed
-            this.y += this.vy*this.speed
-            this.hunger -= 1
-        }
-
-        
-        if(eatflag){
-            this.hunger += 30 + this.energygain
-            eatflag = 0
-            this.diameter += 5
+            }   
         }
     }
    
@@ -111,9 +129,7 @@ class Rabbit{
         fill(90+(this.colour*11),15+(this.colour*16),15+(this.colour*16))
         ellipse(this.x, this.y, this.diameter);
     }
-
-
-    
+ 
 }
 
 class Grass{
@@ -130,14 +146,18 @@ class Grass{
 let rabbits = [];
 let grass_patches = [];
 
+function RandomBinary(){
+    let binary = "dna";
+    for(let i = 0; i < 22; ++i) {
+      binary += Math.floor(Math.random() * Math.floor(2));
+        }
+    return binary;
+}   
+
 function addRabbit(num,white_ratio){
     for (let i = 0; i<num;i++){
-        let random = Math.floor(Math.random() * 100);
-        if(random > white_ratio){
-            rabbits.push(new Rabbit(Math.random() * (970 - 20) + 20,Math.random() * (470 - 20) + 20,15));  
-        } else {
-            rabbits.push(new Rabbit(Math.random() * (970 - 20) + 20,Math.random() * (470 - 20) + 20,0));
-        }
+        rabbits.push(new Rabbit(Math.random() * (970 - 20) + 20,Math.random() * (470 - 20) + 20, RandomBinary()));  
+           
     }
 }
 
