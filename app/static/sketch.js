@@ -1,5 +1,5 @@
 function setup(){
-    createCanvas(990,490)
+    createCanvas(1500,1000)
 }
 counter = 0
 function draw(){
@@ -7,7 +7,7 @@ function draw(){
     
     if (isrunning){
         rabbits.forEach(function(item,index,object){
-            if(item.hunger<=0){
+            if(item.energy<=0){
                 object.splice(index,1)
             }
         })
@@ -21,7 +21,7 @@ function draw(){
         }
         
         if(counter%250 == 0){
-            addGrass(2)
+            addGrass(30-rabbits.length)
         }
         
         counter+=1
