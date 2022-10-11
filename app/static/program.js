@@ -1,5 +1,7 @@
 //checklist
-//implement all the rabbit variables
+//integrate size into other things
+//maximum energy
+//improve high intelligence path finding
 //winter summer button
 //hawk function 
 //graphs    
@@ -27,7 +29,7 @@ class Rabbit{
     }
 
     chooseaction(grass){
-        //eat, reproduce, move, do nothing
+        //eat, reproduce, move, choose direction
         let tempx = this.x
         let tempy = this.y
         let tempe = this.energy
@@ -68,11 +70,8 @@ class Rabbit{
         let tempx = this.x
         let tempy = this.y
         let tempdna = this.dna
-        let grassvx = 0
-        let grassvy = 0
-        let sexvx = 0
-        let sexvy = 0
-        
+        let tempvx = 0
+        let tempvy = 0
 
         if(action[0] == 1){
             this.energy += 30 + this.energygain*2
@@ -86,59 +85,56 @@ class Rabbit{
             rabbits.push(new Rabbit(action[1],action[2],newdna));
         } else if(action[0] == 3){
             this.x += this.vx*(this.speed/4)+1
-            this.y += this.vy*(this.speed/4)+1
+            this.y += this.vy*((this.speed)/4)+1
             this.energy -= 0.5
         } else if(action[0] == 4){
-            grass.forEach(function(item){
-                let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2))
-                if(distance<closest){
-                    closest = distance
-                    if(item.x > tempx){
-                        grassvx = 1
-                    }else if(item.x < tempx){
-                        grassvx = -1
-                    }else{
-                        grassvx = 0
-                    }
-                    if(item.y > tempy){
-                        grassvy = 1
-                    }else if(item.y < tempy){
-                        grassvy = -1
-                    }else{
-                        grassvy = 0
-                    }
-                }
-            })
-
-            rabbits.forEach(function(item){
-                let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2))
-                if(distance<closest && item.dna != tempdna && item.energy > 150){
-                    closest = distance
-                    if(item.x > tempx){
-                        sexvx = 1
-                    }else if(item.x < tempx){
-                        sexvx = -1
-                    }else{
-                        sexvx = 0
-                    }
-                    if(item.y > tempy){
-                        sexvy = 1
-                    }else if(item.y < tempy){
-                        sexvy = -1
-                    }else{
-                        sexvy = 0
-                    }
-                }
-            })
-
             if(this.energy>150){
-                this.vx = sexvx
-                this.vy = sexvy
-            } else if(Math.floor(Math.random() * 16) <= this.intelligence){
-                this.vx = grassvx
-                this.vy = grassvy
+                rabbits.forEach(function(item){
+                    let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2))
+                    if(distance<closest && item.dna != tempdna && item.energy > 150){
+                        closest = distance
+                        if(item.x > tempx){
+                            tempvx = 1
+                        }else if(item.x < tempx){
+                            tempvx = -1
+                        }else{
+                            tempvx = 0
+                        }
+                        if(item.y > tempy){
+                            tempvy = 1
+                        }else if(item.y < tempy){
+                            tempvy = -1
+                        }else{
+                            tempvy = 0
+                        }
+                    }
+                })
+            }else if(Math.floor(Math.random() * 16) <= this.intelligence){
+                grass.forEach(function(item){
+                    let distance = Math.sqrt(Math.pow((tempx-item.x),2) + Math.pow((tempy-item.y),2))
+                    if(distance<closest){
+                        closest = distance
+                        if(item.x > tempx){
+                            tempvx = 1
+                        }else if(item.x < tempx){
+                            tempvx = -1
+                        }else{
+                            tempvx = 0
+                        }
+                        if(item.y > tempy){
+                            tempvy = 1
+                        }else if(item.y < tempy){
+                            tempvy = -1
+                        }else{
+                            tempvy = 0
+                        }
+                    }
+                })
             } 
-                    
+
+            this.vx = tempvx
+            this.vy = tempvy
+
             if(this.x<=30){
                 this.vx = 1
             }
@@ -174,6 +170,7 @@ class Grass{
 
 let rabbits = [];
 let grass_patches = [];
+
 
 function RandomBinary(){
     let binary = "dna";

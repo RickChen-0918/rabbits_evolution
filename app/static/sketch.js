@@ -1,7 +1,9 @@
 function setup(){
-    createCanvas(1500,1000)
+    createCanvas(990,490)
 }
 counter = 0
+population = [0]
+
 function draw(){
     background(220);
     
@@ -22,6 +24,8 @@ function draw(){
         
         if(counter%250 == 0){
             addGrass(30-rabbits.length)
+            population.push(rabbits.length)
+            updateData()
         }
         
         counter+=1
