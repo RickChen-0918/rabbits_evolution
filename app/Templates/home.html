@@ -2,13 +2,34 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-8"><main></main></div>
-        <div class="col-4">{% include 'right_graphs.html' %}</div>
-    </div>
+        <div class="col-4">{%include 'right_graphs.html'%}</div>
     <div class="row">
-        <div class="col-7 bg-warning"> 
+        <style>
+            .custom-bg-color {
+              background-color: #78938A;
+            }
+          </style>
+        <div class="col-7 custom-bg-color"> 
+            <div class="row"><div id="flagText"></div></div>
             <button onclick="start()" id="start">Start</button>
+            <button onclick="halt()" id="halt">Pause/Unpause</button>
+            <button onclick="clearance()" id="clearance">Reset</button>
+            <script>
+                let summer = true;
+              
+                function updateText() {
+                  summer = !summer  
+                  let displayText = document.getElementById("flagText");
+                  if (summer) {
+                    displayText.innerHTML = "Current Season: Summer";
+                  } else {
+                    displayText.innerHTML = "Current Season: Winter";
+                  }
+                }
+              </script>
+              <button onclick="updateText()">Season</button>
         </div>
-        <div class="col-5 bg-info">
+        <div class="col-5 custom-bg-color">
             {%include 'right_sliders.html'%}
         </div>        
     </div>

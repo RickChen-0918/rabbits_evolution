@@ -1,31 +1,124 @@
-<canvas id="myChart" style="width:100%;max-width:500px"></canvas>
-<script>
-// function renderchart() {
-//   var ctx = document.getElementById("myChart").getContext("2d")
-//   var optionsNoAnimation = {animation: false}
-//   var xValues = days;
-//   var yValues = population;
-//   new Chart(ctx, {
-//     type: "line",
-//     data: {
-//       labels: xValues,
-//       datasets: [{
-//         backgroundColor: "rgba(0,0,0,1)",
-//         borderColor: "rgba(0,0,0,0.1)",
-//         data: yValues
-//       }]
-//     },
-//     options:{
-//       responsive: true,
-//       scales: {
-//         y: {
-//             min: 0,
-//             max: 20,
-//             // ticks: {
-//             //     stepSize: 0.5
-//             // }
-//         }
-//     }}
-//   });
-// }
-</script>
+<html>
+  <head>
+    <style>
+      .container {
+        width: 105%;
+        margin: 0 auto;
+      }
+      .chart-container {
+        width: 100%;
+        height: 105%;
+        position: relative;
+      }
+      canvas {
+        width: 100%;
+        height: 105%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+    <script>
+      // Bar Chart
+      const ctx1 = document.getElementById("barChart").getContext("2d");
+      const myBarChart = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels: ['','','','','','','',''],
+          datasets: [
+            {
+              label: "Variable Value",
+              data: [0,0,0,0,0,0,0,0], 
+              backgroundColor: [
+                "rgba(255, 255, 255, 0.2)",
+                "rgba(232, 221, 221, 0.2)",
+                "rgba(208, 186, 186, 0.2)",
+                "rgba(185, 152, 152, 0.2)",
+                "rgba(161, 117, 117, 0.2)",
+                "rgba(138, 84, 84, 0.2)",
+                "rgba(115, 49, 49, 0.2)",
+                "rgba(90, 15, 15, 0.2)"
+              ],
+              borderColor: [
+                "rgba(255, 255, 255, 1)",
+                "rgba(232, 221, 221, 1)",
+                "rgba(208, 186, 186, 1)",
+                "rgba(185, 152, 152, 1)",
+                "rgba(161, 117, 117, 1)",
+                "rgba(138, 84, 84, 1)",
+                "rgba(115, 49, 49, 1)",
+                "rgba(90, 15, 15, 1)"
+              ],
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    max: 8,
+                    fontColor: '#F1DDBF',
+              }
+            }]
+          }
+        }
+      });
+      
+      // Line Chart
+      var ctx2 = document.getElementById('lineChart').getContext('2d');
+      var myLineChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Rabbit Population',
+            data: [], // Update this with the list of numbers
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 0
+          }]
+        },
+        options: {
+          scales: {
+            xAxes: [{
+                gridLines: {
+                    display:false
+            }
+        }],
+            yAxes: [{
+                gridLines: {
+                    display:false
+                },
+                ticks: {
+                    beginAtZero: true,
+                    max: 30, 
+                    fontColor: '#F1DDBF',
+              }
+            }]
+          }
+        }
+      });
+
+    setInterval(function() {
+        if(isrunning){
+            myLineChart.data.labels.push('');
+            myLineChart.data.datasets[0].data.push(rabbits.length);
+            myLineChart.update();
+            myBarChart.data.datasets[0].data = [0,0,0,0,0,0,0,0];
+            rabbits.forEach(function(item){
+                myBarChart.data.datasets[0].data[item.colour] += 1
+            })
+        myBarChart.update();
+        }
+    }, 1000); 
+    </script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
-<p>Number of rabbits</p>
+<p>Starting number of rabbits</p>
 <div class="slidecontainer">
-  <input type="range" class="form-range" min="1" max="30" value="10" class="slider" id="num_rabbit">
+  <input type="range" class="form-range" min="1" max="30" value="15" class="slider" id="num_rabbit">
   <p>Value: <span id="slider1"></span></p>
 </div>
 
@@ -14,14 +14,14 @@ slider1.oninput = function() {
 }
 </script>
 
-<p>Percentage of rabbits that are brown</p>
+<p>Mutation rate</p>
 <div class="slidecontainer">
-  <input type="range" class="form-range" min="0" max="100" value="50" class="slider" id="white%">
+  <input type="range" class="form-range" min="1" max="5" value="3" class="slider" id="mutation_rate">
   <p>Value: <span id="slider2"></span></p>
 </div>
 
 <script>
-var slider2 = document.getElementById("white%");
+var slider2 = document.getElementById("mutation_rate");
 var output2 = document.getElementById("slider2");
 output2.innerHTML = slider2.value;
 

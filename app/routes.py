@@ -1,17 +1,16 @@
-from app import app, db
-from app.models import User
-from flask import render_template, request
+from app import app
+from flask import render_template, send_from_directory
 
 @app.route('/', methods=['GET','POST'])
 def home():
-    if request.method == 'POST':
-        user = User()
-        user.username = request.form['username']
-        db.session.add(user)
-        db.session.commit()
     return render_template('home.html')
 
 @app.route('/users', methods=['GET'])
 def users():
-    users = User.query.all()
-    return render_template('all_users.html', users=users)
+    return render_template('all_users.html')
+
+@app.route('/graphics/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('static/graphics', filename)
+
+
